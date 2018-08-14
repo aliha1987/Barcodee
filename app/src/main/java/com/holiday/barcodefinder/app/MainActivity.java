@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.holiday.barcodefinder.app.activities.QrCodeScannerActivity;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     TextView itemPrice;
     TextView itemDiscount;
     TextView itemNetPrice;
+    View progress;
 
     String barcode;
     String result;
@@ -53,12 +55,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         itemPrice = (TextView) findViewById(R.id.item_price);
         itemDiscount = (TextView) findViewById(R.id.item_discount);
         itemNetPrice = (TextView) findViewById(R.id.item_net);
+        progress =  findViewById(R.id.progress_layout);
 
-        Intent i = getIntent();
-        Bundle bundle = i.getExtras();
-        if (bundle != null) {
-            barcode = bundle.getString("result");}
-        etBarcode.setText(barcode);
+
 
         scan.setOnClickListener(this);
         search.setOnClickListener(this);
@@ -68,22 +67,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.scan_barcode:
                 Intent intent = new Intent(MainActivity.this, QrCodeScannerActivity.class);
-                startActivity(intent);
-
-                parseJSON.execute();
+                startActivityForResult(intent, 1);
                 break;
 
             case R.id.search_button:
                 barcode = etBarcode.getText().toString();
+                progress.setVisibility(View.VISIBLE);
                 parseJSON.execute();
-
-                itemName.setText(itemTO.getName());
-                itemPrice.setText(itemTO.getPrice());
-                itemDiscount.setText(itemTO.getDiscount());
-                itemNetPrice.setText(itemTO.getNetPrice());
-
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Intent i = getIntent();
+        Bundle bundle = i.getExtras();
+        if (bundle != null) {
+            barcode = bundle.getString("result");}
+        etBarcode.setText(barcode);
+        progress.setVisibility(View.VISIBLE);
+        parseJSON.execute();
     }
 
     public String getJSON(String url) {
@@ -143,6 +147,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 Log.e("EXCEPTION :", e + "Get json error");
             }
             return itemTO;
+        }
+
+        @Override
+        protected void onPostExecute(ItemTO itemTO) {
+            super.onPostExecute(itemTO);
+            progress.setVisibility(View.GONE);
+            itemName.setText(itemTO.getName());
+            itemPrice.setText(itemTO.getPrice());
+            itemDiscount.setText(itemTO.getDiscount());
+            itemNetPrice.setText(itemTO.getNetPrice());
         }
     }
 }
