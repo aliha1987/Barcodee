@@ -2,11 +2,13 @@ package com.holiday.barcodefinder.app;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     String barcode;
     String result;
+    static final int BARCODE_SCAN_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         itemPrice = (TextView) findViewById(R.id.item_price);
         itemDiscount = (TextView) findViewById(R.id.item_discount);
         itemNetPrice = (TextView) findViewById(R.id.item_net);
+        
+        barcode = null;
 
         Intent i = getIntent();
         Bundle bundle = i.getExtras();
@@ -68,20 +73,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.scan_barcode:
                 Intent intent = new Intent(MainActivity.this, QrCodeScannerActivity.class);
-                startActivity(intent);
-
+                startActivityForResult(intent, BARCODE_SCAN_REQUEST);
                 parseJSON.execute();
                 break;
-
             case R.id.search_button:
+                InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 barcode = etBarcode.getText().toString();
                 parseJSON.execute();
-
-                itemName.setText(itemTO.getName());
-                itemPrice.setText(itemTO.getPrice());
-                itemDiscount.setText(itemTO.getDiscount());
-                itemNetPrice.setText(itemTO.getNetPrice());
-
                 break;
         }
     }
@@ -115,34 +114,40 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
-    public class ParseJSON extends AsyncTask<String, Void, ItemTO> {
+    private class ParseJSON extends AsyncTask<String, Void, Void>{
 
         @Override
-        protected ItemTO doInBackground(String... strings) {
+        protected Void doInBackground(String... strings) {
             result = getJSON("http://192.168.20.2:8080/it/code?code=" + barcode);
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 itemTO.setState(jsonObject.getInt("success"));
+                JSONObject itemObject = jsonObject.getJSONObject("result");
 
-                if (itemTO.getState() == 1) {
-                    JSONObject itemObject = jsonObject.getJSONObject("result");
-
-
-                    itemTO.setName(itemObject.getString("Name"));
-                    itemTO.setPrice(itemObject.getString("Price"));
-                    itemTO.setDiscount(itemObject.getString("DiscountPercent"));
-                    itemTO.setNetPrice(itemObject.getString("NetPrice"));
-
-                } else {
-
-                    Toast.makeText(getApplicationContext(), "کالایی با این مشخصات یافت نشد!", Toast.LENGTH_SHORT);
-
-                }
+                itemTO.setName(itemObject.getString("Name"));
+                itemTO.setPrice(itemObject.getString("Price"));
+                itemTO.setDiscount(itemObject.getString("DiscountPercent"));
+                itemTO.setNetPrice(itemObject.getString("NetPrice"));
 
             } catch (Exception e) {
                 Log.e("EXCEPTION :", e + "Get json error");
             }
-            return itemTO;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+                if(itemTO.getState()==1) {
+                    itemName.setText(itemTO.getName());
+                    itemPrice.setText(itemTO.getPrice());
+                    itemDiscount.setText(itemTO.getDiscount());
+                    itemNetPrice.setText(itemTO.getNetPrice());
+                }
+                else {
+                        Toast.makeText(getApplicationContext(), "کالایی با این مشخصات یافت نشد!", Toast.LENGTH_SHORT);
+                    }
         }
     }
 }

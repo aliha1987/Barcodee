@@ -7,5 +7,6 @@
     <string name="title_activity_qr_code_scanner">QrCodeScannerActivity</string>
     <string name="serach">Serach</string>
     <string name="scan">Scan</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>
