@@ -31,7 +31,7 @@
                       android:fontFamily="Arial"
                       android:hint="بارکد را وارد نماييد"
                       android:gravity="center"
-                      android:background="#628d8d8d"/>
+                      android:background="@android:drawable/editbox_background_normal"/>
 
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent"
@@ -40,6 +40,7 @@
                       android:layout_marginTop="0dp"
                       android:layout_marginLeft="10dp"
                       android:layout_marginRight="10dp">
+
             <Button android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -51,17 +52,17 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
             />
-            <Button android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:id="@+id/scan_barcode"
-                    android:text="اسکن بارکد"
-                    android:textSize="20sp"
-                    android:fontFamily="Arial"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-            />
+            <Button
+                android:id="@+id/scan_barcode"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:fontFamily="Arial"
+                android:text="اسکن بارکد"
+                android:textSize="20sp" />
 
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent"

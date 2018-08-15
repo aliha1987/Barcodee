@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
 
         itemTO = new ItemTO();
-        parseJSON = new ParseJSON();
+
         scan = (Button) findViewById(R.id.scan_barcode);
         search = (Button) findViewById(R.id.search_button);
         etBarcode = (EditText) findViewById(R.id.scan_content);
@@ -73,6 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.search_button:
                 barcode = etBarcode.getText().toString();
                 progress.setVisibility(View.VISIBLE);
+                parseJSON = new ParseJSON();
                 parseJSON.execute();
                 break;
         }
@@ -87,6 +88,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             barcode = bundle.getString("result");}
         etBarcode.setText(barcode);
         progress.setVisibility(View.VISIBLE);
+        parseJSON = new ParseJSON();
         parseJSON.execute();
     }
 
