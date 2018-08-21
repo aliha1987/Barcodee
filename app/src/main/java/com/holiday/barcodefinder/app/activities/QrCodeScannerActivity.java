@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.zxing.Result;
-import com.holiday.barcodefinder.app.MainActivity;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
@@ -30,7 +29,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                Toast.makeText(getApplicationContext(), "Permission already granted", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Permission already granted", Toast.LENGTH_LONG);
 
             } else {
                 requestPermission();
@@ -113,14 +112,14 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
 
     @Override
     public void handleResult(Result rawResult) {
-        final String result = rawResult.getText();
-        Log.d("QRCodeScanner", rawResult.getText());
-        Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
+            final String result = rawResult.getText();
+            Log.d("QRCodeScanner", rawResult.getText());
+            Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
 
-        Intent i = new Intent(QrCodeScannerActivity.this, MainActivity.class);
-        i.putExtra("result", result );
-        startActivity(i);
-
+            Intent i = getIntent();
+            i.putExtra("result", result);
+            setResult(RESULT_OK, i);
+            finish();
        /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

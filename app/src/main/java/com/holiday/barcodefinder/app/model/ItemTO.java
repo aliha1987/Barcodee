@@ -9,15 +9,15 @@ public class ItemTO implements Serializable {
 
     int state;
     String name;
-    String price;
+    int price;
     String discount;
-    String netPrice;
+    int netPrice;
     String barcode;
 
     public ItemTO(){
 
     }
-    public ItemTO(int state, String name, String price, String discount, String netPrice, String barcode){
+    public ItemTO(int state, String name, int price, String discount, int netPrice, String barcode){
         this.state = state;
         this.name = name;
         this.discount = discount;
@@ -40,11 +40,11 @@ public class ItemTO implements Serializable {
         this.name = name;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -56,11 +56,11 @@ public class ItemTO implements Serializable {
         this.discount = discount;
     }
 
-    public String getNetPrice() {
+    public int getNetPrice() {
         return netPrice;
     }
 
-    public void setNetPrice(String netPrice) {
+    public void setNetPrice(int netPrice) {
         this.netPrice = netPrice;
     }
 
