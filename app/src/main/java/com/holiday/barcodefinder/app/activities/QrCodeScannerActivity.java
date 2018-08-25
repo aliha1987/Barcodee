@@ -90,17 +90,15 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         super.onResume();
 
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
-            if (checkPermission()) {
-                if(mScannerView == null) {
-                    mScannerView = new ZXingScannerView(this);
-                    setContentView(mScannerView);
-                }
-                mScannerView.setResultHandler(this);
-                mScannerView.startCamera();
-            } else {
-                requestPermission();
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M && !checkPermission()) {
+            requestPermission();
+        }else {
+            if (mScannerView == null) {
+                mScannerView = new ZXingScannerView(this);
+                setContentView(mScannerView);
             }
+            mScannerView.setResultHandler(this);
+            mScannerView.startCamera();
         }
     }
 
