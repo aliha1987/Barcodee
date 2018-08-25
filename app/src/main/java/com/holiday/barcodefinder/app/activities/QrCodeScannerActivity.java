@@ -84,7 +84,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
                 .show();
     }
 
-    @Override
+  /*  @Override
     public void onResume() {
         super.onResume();
 
@@ -100,6 +100,22 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
             } else {
                 requestPermission();
             }
+        }
+    }*/
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M && !checkPermission()) {
+            requestPermission();
+        }else {
+            if (mScannerView == null) {
+                mScannerView = new ZXingScannerView(this);
+                setContentView(mScannerView);
+            }
+            mScannerView.setResultHandler(this);
+            mScannerView.startCamera();
         }
     }
 
