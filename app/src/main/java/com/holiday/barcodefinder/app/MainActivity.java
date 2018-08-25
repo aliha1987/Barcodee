@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -49,6 +51,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     String barcode;
     String result;
     NumberFormat formatter;
+    String deviceID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         itemDiscount = (TextView) findViewById(R.id.item_discount);
         itemNetPrice = (TextView) findViewById(R.id.item_net);
         progress =  findViewById(R.id.progress_layout);
+
+        deviceID = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID) + Build.SERIAL;
 
 
        /* Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/yekan.ttf");
@@ -209,7 +215,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         @Override
         protected ItemTO doInBackground(String... strings) {
-            result = getJSON("http://37.32.11.96:8080/it/code?code=" + barcode);
+            result = getJSON("http://37.32.11.96:8080/it/code?code=" + barcode  + "&uuid="+deviceID);
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 itemTO.setState(jsonObject.getInt("success"));
